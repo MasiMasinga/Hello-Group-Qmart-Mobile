@@ -6,5 +6,8 @@
 		{
 			"path": "../hello-group-qmart-web"
 		}
-	]
+	],
+	"settings": {
+		"java.compile.nullAnalysis.mode": "automatic"
+	}
 }
