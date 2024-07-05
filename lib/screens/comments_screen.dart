@@ -11,6 +11,7 @@ class CommentsScreen extends StatefulWidget {
 
 class _CommentsScreenState extends State<CommentsScreen> {
   final ApiService _apiService = ApiService();
+  
   late Future<List<dynamic>> _commentsFuture;
 
   @override
@@ -22,16 +23,24 @@ class _CommentsScreenState extends State<CommentsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Comments')),
+      appBar: AppBar(
+        title: const Text('Comments'),
+      ),
       body: FutureBuilder<List<dynamic>>(
         future: _commentsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           } else if (snapshot.hasError) {
-            return const Center(child: Text('Failed to load comments'));
+            return const Center(
+              child: Text('Failed to load comments'),
+            );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No comments'));
+            return const Center(
+              child: Text('No comments'),
+            );
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -44,7 +53,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ReplyToCommentScreen(commentId: comment['id']),
+                        builder: (context) =>
+                            ReplyToCommentScreen(commentId: comment['id']),
                       ),
                     );
                   },

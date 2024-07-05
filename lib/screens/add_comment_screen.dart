@@ -12,6 +12,7 @@ class _AddCommentScreenState extends State<AddCommentScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _commentController = TextEditingController();
+  
   final ApiService _apiService = ApiService();
 
   void _submitComment() {

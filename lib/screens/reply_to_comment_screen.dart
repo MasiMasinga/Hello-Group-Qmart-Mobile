@@ -13,7 +13,9 @@ class ReplyToCommentScreen extends StatefulWidget {
 class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
   final _formKey = GlobalKey<FormState>();
   final _replyController = TextEditingController();
+
   final ApiService _apiService = ApiService();
+  
   late Future<List<dynamic>> _repliesFuture;
 
   @override
@@ -49,7 +51,9 @@ class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Reply to Comment')),
+      appBar: AppBar(
+        title: const Text('Reply to Comment'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -77,11 +81,17 @@ class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
                 future: _repliesFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   } else if (snapshot.hasError) {
-                    return const Center(child: Text('Failed to load replies'));
+                    return const Center(
+                      child: Text('Failed to load replies'),
+                    );
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('No replies'));
+                    return const Center(
+                      child: Text('No replies'),
+                    );
                   } else {
                     return ListView.builder(
                       itemCount: snapshot.data!.length,
