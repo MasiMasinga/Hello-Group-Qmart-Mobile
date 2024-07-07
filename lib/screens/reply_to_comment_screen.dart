@@ -1,4 +1,12 @@
 import 'package:flutter/material.dart';
+
+// Widgets
+import 'package:hello_group_qmart_mobile/common/widgets/custom_button.dart';
+import 'package:hello_group_qmart_mobile/common/widgets/custom_text.dart';
+import 'package:hello_group_qmart_mobile/common/widgets/custom_textfield.dart';
+import 'package:hello_group_qmart_mobile/common/widgets/snack_bar.dart';
+
+// Services
 import 'package:hello_group_qmart_mobile/services/api_service.dart';
 
 class ReplyToCommentScreen extends StatefulWidget {
@@ -31,10 +39,10 @@ class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
           .addReply(
               widget.commentId, _fanNameController.text, _replyController.text)
           .then((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Reply added'),
-          ),
+        CustomSnackBar.show(
+          context,
+          'Reply added',
+          backgroundColor: Colors.green,
         );
         _fanNameController.clear();
         _replyController.clear();
@@ -43,10 +51,10 @@ class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
         });
       }).catchError(
         (error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Failed to add reply'),
-            ),
+          CustomSnackBar.show(
+            context,
+            'Failed to add reply',
+            backgroundColor: Colors.red,
           );
         },
       );
@@ -57,7 +65,10 @@ class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reply to Comment'),
+        title: const CustomText(
+          text: 'Reply to Comment',
+          fontSize: 20.0,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -72,23 +83,29 @@ class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
                   );
                 } else if (snapshot.hasError) {
                   return const Center(
-                    child: Text('Failed to load comment'),
+                    child: CustomText(
+                      text: 'Failed to load comment',
+                      textAlign: TextAlign.center,
+                    ),
                   );
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No comment found'));
+                  return const Center(
+                    child: CustomText(
+                      text: 'No comment found',
+                      textAlign: TextAlign.center,
+                    ),
+                  );
                 } else {
                   final comment = snapshot.data![0];
                   return ListTile(
-                    title: Text(
-                      comment['comment'] ?? 'Unknown Comment',
+                    title: CustomText(
+                      text: comment['comment'] ?? 'Unknown Comment',
                       textAlign: TextAlign.center,
                     ),
-                    subtitle: Text(
-                      'By: ${comment['name']}',
+                    subtitle: CustomText(
+                      text: 'By: ${comment['name']}',
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      fontWeight: FontWeight.bold,
                     ),
                   );
                 }
@@ -101,22 +118,23 @@ class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    TextFormField(
+                    CustomTextField(
+                      hintText: 'Your Name',
                       controller: _fanNameController,
-                      decoration: const InputDecoration(labelText: 'Your Name'),
                       validator: (value) =>
                           value?.isEmpty ?? true ? 'Name is required' : null,
                     ),
-                    TextFormField(
+                    const SizedBox(height: 8.0),
+                    CustomTextField(
+                      hintText: 'Reply',
                       controller: _replyController,
-                      decoration: const InputDecoration(labelText: 'Reply'),
                       validator: (value) =>
                           value?.isEmpty ?? true ? 'Reply is required' : null,
                     ),
-                    const SizedBox(height: 16.0),
-                    ElevatedButton(
+                    const SizedBox(height: 8.0),
+                    CustomButton(
                       onPressed: _submitReply,
-                      child: const Text('Submit'),
+                      text: 'Submit',
                     ),
                   ],
                 ),
@@ -132,11 +150,17 @@ class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
                     );
                   } else if (snapshot.hasError) {
                     return const Center(
-                      child: Text('Failed to load replies'),
+                      child: CustomText(
+                        text: 'Failed to load replies',
+                        textAlign: TextAlign.center,
+                      ),
                     );
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Center(
-                      child: Text('No replies'),
+                      child: CustomText(
+                        text: 'No replies',
+                        textAlign: TextAlign.center,
+                      ),
                     );
                   } else {
                     return ListView.builder(
@@ -149,21 +173,27 @@ class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
                           children: [
                             if (replies != null && replies.isNotEmpty)
                               Column(
-                                children: replies.map<Widget>((reply) {
-                                  return ListTile(
-                                    title: Text(
-                                        reply['fan_reply'] ?? 'Unknown Reply'),
-                                    subtitle: Text(
-                                      'By: ${reply['fan_name']}',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  );
-                                }).toList(),
+                                children: replies.map<Widget>(
+                                  (reply) {
+                                    return ListTile(
+                                      title: CustomText(
+                                        text: reply['fan_reply'] ??
+                                            'Unknown Reply',
+                                      ),
+                                      subtitle: CustomText(
+                                        text: 'By: ${reply['fan_name']}',
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    );
+                                  },
+                                ).toList(),
                               ),
                             if (replies == null || replies.isEmpty)
                               const Center(
-                                child: Text('No replies'),
+                                child: CustomText(
+                                  text: 'Failed to load replies',
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                           ],
                         );

@@ -20,7 +20,7 @@ class CustomTextField extends StatelessWidget {
     this.textInputAction = TextInputAction.done,
     this.onSubmitted,
     this.onChanged,
-    this.borderColor = Colors.blue, // Default color is blue
+    this.borderColor = Colors.blue, 
     this.validator,
   });
 
@@ -36,7 +36,9 @@ class CustomTextField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         border: OutlineInputBorder(
-          borderSide: BorderSide(color: borderColor),
+          borderSide: BorderSide(
+            color: borderColor,
+          ),
         ),
       ),
     );

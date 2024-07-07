@@ -1,4 +1,12 @@
 import 'package:flutter/material.dart';
+
+// Widgets
+import 'package:hello_group_qmart_mobile/common/widgets/custom_button.dart';
+import 'package:hello_group_qmart_mobile/common/widgets/custom_text.dart';
+import 'package:hello_group_qmart_mobile/common/widgets/custom_textfield.dart';
+import 'package:hello_group_qmart_mobile/common/widgets/snack_bar.dart';
+
+// Services
 import 'package:hello_group_qmart_mobile/services/api_service.dart';
 
 class AddCommentScreen extends StatefulWidget {
@@ -20,17 +28,17 @@ class _AddCommentScreenState extends State<AddCommentScreen> {
       _apiService
           .addComment(_nameController.text, _commentController.text)
           .then((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Comment added'),
-          ),
+        CustomSnackBar.show(
+          context,
+          'Comment added',
+          backgroundColor: Colors.green,
         );
         Navigator.pop(context);
       }).catchError((error) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to add comment'),
-          ),
+        CustomSnackBar.show(
+          context,
+          'Failed to add comment',
+          backgroundColor: Colors.red,
         );
       });
     }
@@ -40,7 +48,10 @@ class _AddCommentScreenState extends State<AddCommentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Comment'),
+        title: const CustomText(
+          text: 'Add Comment',
+          fontSize: 20.0,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -48,24 +59,24 @@ class _AddCommentScreenState extends State<AddCommentScreen> {
           key: _formKey,
           child: Column(
             children: [
-              TextFormField(
+              CustomTextField(
+                hintText: 'Name',
                 controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Name'),
                 validator: (value) =>
                     value?.isEmpty ?? true ? 'Name is required' : null,
               ),
               const SizedBox(height: 16.0),
-              TextFormField(
+              CustomTextField(
+                hintText: 'Comment',
                 controller: _commentController,
-                decoration: const InputDecoration(labelText: 'Comment'),
                 validator: (value) =>
                     value?.isEmpty ?? true ? 'Comment is required' : null,
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton(
+              CustomButton(
                 onPressed: _submitComment,
-                child: const Text('Submit'),
-              ),
+                text: 'Submit',
+              )
             ],
           ),
         ),

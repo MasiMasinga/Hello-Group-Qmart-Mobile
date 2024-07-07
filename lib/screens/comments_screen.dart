@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+
+// Widgets
+import 'package:hello_group_qmart_mobile/common/widgets/custom_text.dart';
 import 'package:hello_group_qmart_mobile/services/api_service.dart';
+
+// Screens
 import 'add_comment_screen.dart';
 import 'reply_to_comment_screen.dart';
 
@@ -28,7 +33,12 @@ class _CommentsScreenState extends State<CommentsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Comments')),
+      appBar: AppBar(
+        title: const CustomText(
+          text: 'Comments',
+          fontSize: 20.0,
+        ),
+      ),
       body: FutureBuilder<List<dynamic>>(
         future: _commentsFuture,
         builder: (context, snapshot) {
@@ -38,10 +48,18 @@ class _CommentsScreenState extends State<CommentsScreen> {
             );
           } else if (snapshot.hasError) {
             return const Center(
-              child: Text('Failed to load comments'),
+              child: CustomText(
+                text: 'Failed to load comments',
+                textAlign: TextAlign.center,
+              ),
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No comments'));
+            return const Center(
+              child: CustomText(
+                text: 'No comments',
+                textAlign: TextAlign.center,
+              ),
+            );
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -53,9 +71,11 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 return ListTile(
                   title: Text(
                     name,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  subtitle: Text(commentText),
+                  subtitle: CustomText(text: commentText),
                   onTap: () {
                     Navigator.push(
                       context,
