@@ -67,7 +67,6 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 final comment = snapshot.data![index];
                 final name = comment['name'] ?? 'Unknown';
                 final commentText = comment['comment'] ?? 'No comment';
-
                 return ListTile(
                   title: Text(
                     name,
