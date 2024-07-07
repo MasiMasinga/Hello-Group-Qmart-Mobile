@@ -64,28 +64,60 @@ class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: _fanNameController,
-                    decoration: const InputDecoration(labelText: 'Your Name'),
-                    validator: (value) =>
-                        value?.isEmpty ?? true ? 'Name is required' : null,
-                  ),
-                  TextFormField(
-                    controller: _replyController,
-                    decoration: const InputDecoration(labelText: 'Reply'),
-                    validator: (value) =>
-                        value?.isEmpty ?? true ? 'Reply is required' : null,
-                  ),
-                  const SizedBox(height: 16.0),
-                  ElevatedButton(
-                    onPressed: _submitReply,
-                    child: const Text('Submit'),
-                  ),
-                ],
+            FutureBuilder<List<dynamic>>(
+              future: _repliesFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return const Center(child: Text('Failed to load comment'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No comment found'));
+                } else {
+                  final comment = snapshot.data![0];
+                  return ListTile(
+                    title: Text(
+                      comment['comment'] ?? 'Unknown Comment',
+                      textAlign: TextAlign.center, 
+                    ),
+                    subtitle: Text(
+                      'By: ${comment['name']}',
+                      textAlign: TextAlign.center, 
+                      style: const TextStyle(
+                        fontWeight:
+                            FontWeight.bold,
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
+            const SizedBox(height: 16.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: _fanNameController,
+                      decoration: const InputDecoration(labelText: 'Your Name'),
+                      validator: (value) =>
+                          value?.isEmpty ?? true ? 'Name is required' : null,
+                    ),
+                    TextFormField(
+                      controller: _replyController,
+                      decoration: const InputDecoration(labelText: 'Reply'),
+                      validator: (value) =>
+                          value?.isEmpty ?? true ? 'Reply is required' : null,
+                    ),
+                    const SizedBox(height: 16.0),
+                    ElevatedButton(
+                      onPressed: _submitReply,
+                      child: const Text('Submit'),
+                    ),
+                  ],
+                ),
               ),
             ),
             Expanded(
@@ -113,11 +145,6 @@ class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ListTile(
-                              title:
-                                  Text(comment['comment'] ?? 'Unknown Comment'),
-                              subtitle: Text('By: ${comment['name']}'),
-                            ),
                             if (replies != null && replies.isNotEmpty)
                               Column(
                                 children: replies.map<Widget>((reply) {
