@@ -4,7 +4,8 @@ import 'package:hello_group_qmart_mobile/services/api_service.dart';
 class ReplyToCommentScreen extends StatefulWidget {
   final int commentId;
 
-  const ReplyToCommentScreen({super.key, required this.commentId});
+  const ReplyToCommentScreen({Key? key, required this.commentId})
+      : super(key: key);
 
   @override
   _ReplyToCommentScreenState createState() => _ReplyToCommentScreenState();
@@ -12,10 +13,11 @@ class ReplyToCommentScreen extends StatefulWidget {
 
 class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _fanNameController = TextEditingController();
   final _replyController = TextEditingController();
 
   final ApiService _apiService = ApiService();
-  
+
   late Future<List<dynamic>> _repliesFuture;
 
   @override
@@ -26,12 +28,16 @@ class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
 
   void _submitReply() {
     if (_formKey.currentState?.validate() ?? false) {
-      _apiService.addReply(widget.commentId, _replyController.text).then((_) {
+      _apiService
+          .addReply(
+              widget.commentId, _fanNameController.text, _replyController.text)
+          .then((_) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Reply added'),
           ),
         );
+        _fanNameController.clear();
         _replyController.clear();
         setState(() {
           _repliesFuture = _apiService.fetchReplies(widget.commentId);
@@ -62,6 +68,12 @@ class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
               key: _formKey,
               child: Column(
                 children: [
+                  TextFormField(
+                    controller: _fanNameController,
+                    decoration: const InputDecoration(labelText: 'Your Name'),
+                    validator: (value) =>
+                        value?.isEmpty ?? true ? 'Name is required' : null,
+                  ),
                   TextFormField(
                     controller: _replyController,
                     decoration: const InputDecoration(labelText: 'Reply'),
@@ -96,9 +108,35 @@ class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
                     return ListView.builder(
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
-                        final reply = snapshot.data![index];
-                        return ListTile(
-                          title: Text(reply['reply']),
+                        final comment = snapshot.data![index];
+                        final replies = comment['replies'] as List<dynamic>?;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ListTile(
+                              title:
+                                  Text(comment['comment'] ?? 'Unknown Comment'),
+                              subtitle: Text('By: ${comment['name']}'),
+                            ),
+                            if (replies != null && replies.isNotEmpty)
+                              Column(
+                                children: replies.map<Widget>((reply) {
+                                  return ListTile(
+                                    title: Text(
+                                        reply['fan_reply'] ?? 'Unknown Reply'),
+                                    subtitle: Text(
+                                      'By: ${reply['fan_name']}',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            if (replies == null || replies.isEmpty)
+                              const Center(
+                                child: Text('No replies'),
+                              ),
+                          ],
                         );
                       },
                     );
