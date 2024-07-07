@@ -4,8 +4,7 @@ import 'package:hello_group_qmart_mobile/services/api_service.dart';
 class ReplyToCommentScreen extends StatefulWidget {
   final int commentId;
 
-  const ReplyToCommentScreen({Key? key, required this.commentId})
-      : super(key: key);
+  const ReplyToCommentScreen({super.key, required this.commentId});
 
   @override
   _ReplyToCommentScreenState createState() => _ReplyToCommentScreenState();
@@ -68,9 +67,13 @@ class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
               future: _repliesFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
                 } else if (snapshot.hasError) {
-                  return const Center(child: Text('Failed to load comment'));
+                  return const Center(
+                    child: Text('Failed to load comment'),
+                  );
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(child: Text('No comment found'));
                 } else {
@@ -78,14 +81,13 @@ class _ReplyToCommentScreenState extends State<ReplyToCommentScreen> {
                   return ListTile(
                     title: Text(
                       comment['comment'] ?? 'Unknown Comment',
-                      textAlign: TextAlign.center, 
+                      textAlign: TextAlign.center,
                     ),
                     subtitle: Text(
                       'By: ${comment['name']}',
-                      textAlign: TextAlign.center, 
+                      textAlign: TextAlign.center,
                       style: const TextStyle(
-                        fontWeight:
-                            FontWeight.bold,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   );

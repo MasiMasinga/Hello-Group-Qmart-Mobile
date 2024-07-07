@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+
+// Routes
 import 'package:hello_group_qmart_mobile/routes/routes.dart';
-import 'package:hello_group_qmart_mobile/screens/add_comment_screen.dart';
-import 'package:hello_group_qmart_mobile/screens/comments_screen.dart';
 
 void main() {
   runApp(
