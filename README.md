@@ -6,8 +6,8 @@ A new Flutter project.
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/your-repo-name.git
-   cd your-repo-name
+   git clone https://github.com/MasiMasinga/Hello-Group-Qmart-Mobile.git
+   cd Hello-Group-Qmart-Mobile
 
 2. **Install dependencies**:
     ```base
